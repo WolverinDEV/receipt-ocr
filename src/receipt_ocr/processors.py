@@ -22,6 +22,7 @@ class ReceiptProcessor:
         json_schema: Dict[str, Any],
         model: Optional[str] = None,
         response_format_type: Optional[str] = None,
+        categories: Optional[list[Dict[str, Any]]] = None,
     ) -> Dict[str, Any]:
         """Process a receipt image and return a structured JSON object.
 
@@ -30,12 +31,17 @@ class ReceiptProcessor:
             json_schema: JSON schema defining the expected output structure.
             model: Optional model name to use for the LLM.
             response_format_type: Optional response format type. Supported: "json_object", "json_schema", "text".
+            categories: Optional taxonomy used to classify the receipt across all line items.
 
         Returns:
             Dict containing the parsed receipt data.
         """
         response = self.provider.get_response(
-            image_path, json_schema, model, response_format_type
+            image_path,
+            json_schema,
+            model,
+            response_format_type,
+            categories=categories,
         )
         content = response.choices[0].message.content
         return self.parser.parse(content)

@@ -17,6 +17,14 @@ Here is an example of a desired JSON output:
     "reference": "ABC123",
     "authorization_code": "AUTH42"
   }},
+  "taxonomy": {{
+    "category": "Personal Care",
+    "subcategory": "Oral Care",
+    "category_id": "groceries",
+    "category_name": "Groceries",
+    "subcategory_id": "oral-care",
+    "subcategory_name": "Oral Care"
+  }},
   "line_items": [
     {{
       "item_name": "Item 1",
@@ -35,6 +43,8 @@ Here is an example of a desired JSON output:
 ```
 
 If payment information is present, include the payment method and any printed payment data such as card brand, masked card digits, reference number, or authorization code.
+{default_categorization_guidance}
+{categorization_guidance}
 
 Please extract the information from the receipt image and provide it in the following JSON schema:
 

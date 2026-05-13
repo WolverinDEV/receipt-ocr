@@ -1,11 +1,10 @@
 import json
-from typing import Optional
+from typing import Any, Optional
 
 from fastapi import FastAPI, HTTPException, UploadFile, Form
 from fastapi.responses import JSONResponse
 
-from receipt_ocr.constants import DEFAULT_RECEIPT_SCHEMA
-from receipt_ocr.processors import ReceiptProcessor
+from receipt_ocr import DEFAULT_RECEIPT_SCHEMA, ReceiptProcessor
 
 # Initialize processor once (not on each request)
 processor = ReceiptProcessor()
@@ -19,6 +18,48 @@ app = FastAPI(
 # Default JSON schema (same as CLI)
 DEFAULT_SCHEMA = DEFAULT_RECEIPT_SCHEMA
 MAX_IMAGE_SIZE = 5 * 1024 * 1024  # 5 MB
+
+
+def parse_categories_payload(categories: str) -> list[dict[str, Any]]:
+    """Parse and validate the optional categories payload."""
+    try:
+        payload = json.loads(categories)
+    except json.JSONDecodeError as exc:
+        raise HTTPException(status_code=400, detail="Invalid categories format") from exc
+
+    if not isinstance(payload, list):
+        raise HTTPException(status_code=400, detail="Categories must be a JSON list")
+
+    for category in payload:
+        if not isinstance(category, dict):
+            raise HTTPException(
+                status_code=400, detail="Each category must be a JSON object"
+            )
+        if "id" not in category or "description" not in category:
+            raise HTTPException(
+                status_code=400,
+                detail="Each category must include id and description",
+            )
+
+        subcategories = category.get("subcategories", [])
+        if subcategories is not None and not isinstance(subcategories, list):
+            raise HTTPException(
+                status_code=400, detail="subcategories must be a JSON list"
+            )
+
+        for subcategory in subcategories:
+            if not isinstance(subcategory, dict):
+                raise HTTPException(
+                    status_code=400,
+                    detail="Each subcategory must be a JSON object",
+                )
+            if "id" not in subcategory or "description" not in subcategory:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Each subcategory must include id and description",
+                )
+
+    return payload
 
 
 @app.get("/")
@@ -44,11 +85,13 @@ async def health_check():
 async def ocr_receipt(
     file: UploadFile,
     json_schema: Optional[str] = Form(default=None),
+    categories: Optional[str] = Form(default=None),
 ):
     """Extract structured data from a receipt image using LLM processing.
 
     - **file**: Receipt image file (JPEG, PNG, etc., max 5MB)
     - **json_schema**: Optional custom JSON schema as string (will be parsed to dict)
+    - **categories**: Optional category taxonomy as JSON list with ids, descriptions, and nested subcategories
     """
     try:
         # Validation: Check content type
@@ -77,8 +120,14 @@ async def ocr_receipt(
                     status_code=400, detail="Invalid JSON schema format"
                 )
 
+        categories_to_use = None
+        if categories:
+            categories_to_use = parse_categories_payload(categories)
+
         # Process the receipt using the processor
-        result = processor.process_receipt(image_bytes, schema_to_use)
+        result = processor.process_receipt(
+            image_bytes, schema_to_use, categories=categories_to_use
+        )
         return JSONResponse(content=result, status_code=200)
 
     except HTTPException:

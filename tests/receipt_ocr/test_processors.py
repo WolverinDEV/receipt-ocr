@@ -40,7 +40,7 @@ def test_process_receipt_success(
 
     # Assert
     mock_provider.get_response.assert_called_once_with(
-        "dummy_path.png", json_schema, "gpt-4o", None
+        "dummy_path.png", json_schema, "gpt-4o", None, categories=None
     )
     mock_parser.parse.assert_called_once_with(
         '{"merchant_name": "Test Merchant", "total": 10.00}'
@@ -78,3 +78,40 @@ def test_process_receipt_with_minimal_schema(
 
     # Assert
     assert result == {"key": "value"}
+
+
+def test_process_receipt_with_categories(
+    processor, mock_provider, mock_parser, mock_chat_completion
+):
+    # Arrange
+    categories = [
+        {
+            "id": "groceries",
+            "description": "Food and household goods",
+            "subcategories": [
+                {"id": "oral-care", "description": "Toothpaste and brushes"}
+            ],
+        }
+    ]
+    mock_provider.get_response.return_value = mock_chat_completion
+    mock_parser.parse.return_value = {"line_items": []}
+    json_schema = {
+        "line_items": [
+            {
+                "item_name": "string",
+                "item_quantity": "number",
+                "item_price": "number",
+            }
+        ]
+    }
+
+    # Act
+    result = processor.process_receipt(
+        "dummy_path.png", json_schema, "gpt-4o", categories=categories
+    )
+
+    # Assert
+    mock_provider.get_response.assert_called_once_with(
+        "dummy_path.png", json_schema, "gpt-4o", None, categories=categories
+    )
+    assert result == {"line_items": []}

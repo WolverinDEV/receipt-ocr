@@ -13,6 +13,14 @@ DEFAULT_RECEIPT_SCHEMA = {
         "reference": "string",
         "authorization_code": "string",
     },
+    "taxonomy": {
+        "category": "string",
+        "subcategory": "string",
+        "category_id": "string",
+        "category_name": "string",
+        "subcategory_id": "string",
+        "subcategory_name": "string",
+    },
     "line_items": [
         {
             "item_name": "string",

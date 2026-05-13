@@ -57,6 +57,11 @@ curl -X POST "http://localhost:8000/ocr/" \
 curl -X POST "http://localhost:8000/ocr/" \
   -F "file=@path/to/receipt.jpg" \
   -F 'json_schema={"merchant": "string", "total": "number"}'
+
+# Process with a category taxonomy for receipt-level categorization
+curl -X POST "http://localhost:8000/ocr/" \
+  -F "file=@path/to/receipt.jpg" \
+  -F 'categories=[{"id":"groceries","name":"Groceries","description":"Everyday food and household purchases","subcategories":[{"id":"oral-care","name":"Oral Care","description":"Toothpaste, toothbrushes, and mouthwash"}]}]'
 ```
 
 ## API Endpoints
@@ -73,6 +78,7 @@ Extract structured data from a receipt image.
 **Parameters:**
 - `file` (required): Receipt image file (JPEG, PNG, etc., max 5MB)
 - `json_schema` (optional): Custom JSON schema as dictionary
+- `categories` (optional): JSON list of categories with `id`, `description`, and optional nested `subcategories`
 
 **Response:**
 ```json
@@ -87,6 +93,14 @@ Extract structured data from a receipt image.
     "card_last4": "1234",
     "reference": "ABC123",
     "authorization_code": "AUTH42"
+  },
+  "taxonomy": {
+    "category": "Personal Care",
+    "subcategory": "Oral Care",
+    "category_id": "groceries",
+    "category_name": "Groceries",
+    "subcategory_id": "oral-care",
+    "subcategory_name": "Oral Care"
   },
   "line_items": [
     {

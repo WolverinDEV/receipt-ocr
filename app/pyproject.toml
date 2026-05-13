@@ -14,8 +14,12 @@ classifiers = [
 ]
 dependencies = [
   "fastapi[standard]==0.128",
-  "pillow==12.1",
-  "python-dotenv==1.2.1",
+  "pillow",
+  "python-dotenv",
   "python-multipart==0.0.22",
-  "receipt-ocr>=0.2.2",
+  "receipt-ocr",
 ]
+
+
+[tool.uv.sources]
+receipt-ocr = { path = ".." }

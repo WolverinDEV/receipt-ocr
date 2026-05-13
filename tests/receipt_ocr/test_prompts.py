@@ -15,7 +15,11 @@ def test_system_prompt_formatting():
     json_schema_str = json.dumps(json_schema, indent=2)
 
     # This should not raise an exception
-    formatted_prompt = SYSTEM_PROMPT.format(json_schema_content=json_schema_str)
+    formatted_prompt = SYSTEM_PROMPT.format(
+        json_schema_content=json_schema_str,
+        default_categorization_guidance="",
+        categorization_guidance="",
+    )
 
     assert "merchant_name" in formatted_prompt
     assert "total_amount" in formatted_prompt
@@ -29,7 +33,11 @@ def test_system_prompt_formatting_empty_schema():
 
     json_schema_str = json.dumps(json_schema, indent=2)
 
-    formatted_prompt = SYSTEM_PROMPT.format(json_schema_content=json_schema_str)
+    formatted_prompt = SYSTEM_PROMPT.format(
+        json_schema_content=json_schema_str,
+        default_categorization_guidance="",
+        categorization_guidance="",
+    )
 
     assert json_schema_str in formatted_prompt
 

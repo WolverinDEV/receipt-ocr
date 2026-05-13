@@ -134,6 +134,14 @@ pip install receipt-ocr
         "reference": "",
         "authorization_code": ""
       },
+      "taxonomy": {
+        "category": "Personal Care",
+        "subcategory": "Oral Care",
+        "category_id": "",
+        "category_name": "",
+        "subcategory_id": "",
+        "subcategory_name": ""
+      },
       "line_items": [
         {
           "item_name": "COLGATE DENTAL",
@@ -185,6 +193,14 @@ pip install receipt-ocr
             "reference": "string",
             "authorization_code": "string",
         },
+        "taxonomy": {
+            "category": "string",
+            "subcategory": "string",
+            "category_id": "string",
+            "category_name": "string",
+            "subcategory_id": "string",
+            "subcategory_name": "string",
+        },
         "line_items": [
             {
                 "item_name": "string",
@@ -199,6 +215,36 @@ pip install receipt-ocr
 
     print(result)
     ```
+
+    To classify line items into your own taxonomy, pass a categories list when calling the processor:
+
+    ```python
+    categories = [
+        {
+            "id": "groceries",
+            "name": "Groceries",
+            "description": "Everyday food and household purchases",
+            "subcategories": [
+                {
+                    "id": "oral-care",
+                    "name": "Oral Care",
+                    "description": "Toothpaste, toothbrushes, and mouthwash",
+                }
+            ],
+        }
+    ]
+
+    result = processor.process_receipt(
+        "path/to/receipt.jpg",
+        json_schema,
+        "gpt-4.1",
+        categories=categories,
+    )
+    ```
+
+    The receipt output groups classification fields under `taxonomy`.
+    `taxonomy.category` and `taxonomy.subcategory` are always free-form labels.
+    When categories are supplied, `taxonomy.category_id`, `taxonomy.category_name`, `taxonomy.subcategory_id`, and `taxonomy.subcategory_name` are matched from your taxonomy list.
 
     **Advanced Usage with Response Format Types:**
 
@@ -246,6 +292,19 @@ pip install receipt-ocr
           "required": ["card_brand", "card_last4", "reference", "authorization_code"],
           "additionalProperties": false
         },
+        "taxonomy": {
+          "type": "object",
+          "properties": {
+            "category": {"type": "string"},
+            "subcategory": {"type": "string"},
+            "category_id": {"type": "string"},
+            "category_name": {"type": "string"},
+            "subcategory_id": {"type": "string"},
+            "subcategory_name": {"type": "string"}
+          },
+          "required": ["category", "subcategory", "category_id", "category_name", "subcategory_id", "subcategory_name"],
+          "additionalProperties": false
+        },
         "line_items": {
           "type": "array",
           "items": {
@@ -268,6 +327,7 @@ pip install receipt-ocr
         "total_amount",
         "payment_method",
         "payment_data",
+        "taxonomy",
         "line_items"
       ],
       "additionalProperties": false
@@ -305,6 +365,11 @@ pip install receipt-ocr
     curl -X POST "http://localhost:8000/ocr/" \
       -F "file=@images/receipt.jpg" \
       -F 'json_schema={"merchant": "string", "total": "number"}'
+
+    # Process with category taxonomy for receipt-level classification
+    curl -X POST "http://localhost:8000/ocr/" \
+      -F "file=@images/receipt.jpg" \
+      -F 'categories=[{"id":"groceries","name":"Groceries","description":"Everyday food and household purchases","subcategories":[{"id":"oral-care","name":"Oral Care","description":"Toothpaste, toothbrushes, and mouthwash"}]}]'
     ```
 
     For detailed API documentation, visit `http://localhost:8000/docs` when the service is running.

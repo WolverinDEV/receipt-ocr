@@ -87,6 +87,8 @@ def test_main_with_default_schema(mock_provider_class, mock_processor_class, tmp
     assert call_args[0][1] == DEFAULT_RECEIPT_SCHEMA
     assert call_args[0][1]["payment_method"] == "string"
     assert call_args[0][1]["payment_data"]["card_last4"] == "string"
+    assert call_args[0][1]["taxonomy"]["category"] == "string"
+    assert call_args[0][1]["taxonomy"]["subcategory"] == "string"
     mock_print.assert_called_once_with(json.dumps({"merchant_name": "Test"}, indent=4))
 
 

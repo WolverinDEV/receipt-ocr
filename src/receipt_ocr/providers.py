@@ -7,6 +7,10 @@ from openai import OpenAI
 from openai.types.chat.chat_completion import ChatCompletion
 from PIL import Image
 
+from receipt_ocr.categorization import (
+    build_categorization_guidance,
+    build_default_categorization_guidance,
+)
 from receipt_ocr.constants import _DEFAULT_OPENAI_MODEL
 from receipt_ocr.prompts import SYSTEM_PROMPT, USER_PROMPT
 from receipt_ocr.utils import encode_image_to_base64
@@ -22,6 +26,7 @@ class LLMProvider(ABC):
         json_schema: dict,
         model: str,
         response_format_type: Optional[str] = None,
+        categories: Optional[list[dict[str, Any]]] = None,
     ) -> Any:
         """Get the response from the LLM provider."""
         pass
@@ -42,6 +47,7 @@ class OpenAIProvider(LLMProvider):
         json_schema: dict,
         model: Optional[str] = None,
         response_format_type: Optional[str] = None,
+        categories: Optional[list[dict[str, Any]]] = None,
     ) -> ChatCompletion:
         """Get the response from the OpenAI API."""
         # Encode image to base64 using utility function
@@ -49,7 +55,9 @@ class OpenAIProvider(LLMProvider):
 
         # Create the system prompt
         system_prompt = SYSTEM_PROMPT.format(
-            json_schema_content=json.dumps(json_schema, indent=2)
+            json_schema_content=json.dumps(json_schema, indent=2),
+            default_categorization_guidance=build_default_categorization_guidance(),
+            categorization_guidance=build_categorization_guidance(categories),
         )
 
         response_format_type = response_format_type or "json_object"

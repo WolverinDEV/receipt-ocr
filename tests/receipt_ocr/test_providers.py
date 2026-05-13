@@ -108,3 +108,53 @@ def test_get_response_text_format(
     # Verify the response_format was set to text
     call_args = mock_openai_instance.chat.completions.create.call_args
     assert call_args[1]["response_format"] == {"type": "text"}
+
+
+@patch("receipt_ocr.providers.OpenAI")
+def test_get_response_with_categories(
+    mock_openai_client_class, dummy_image_path, mock_chat_completion
+):
+    mock_openai_instance = MagicMock()
+    mock_openai_client_class.return_value = mock_openai_instance
+
+    provider = OpenAIProvider(api_key="test_api_key")
+    mock_openai_instance.chat.completions.create.return_value = mock_chat_completion
+
+    dummy_json_schema = {
+        "taxonomy": {
+            "category": "string",
+            "subcategory": "string",
+            "category_id": "string",
+            "subcategory_id": "string",
+        },
+        "line_items": [
+            {
+                "item_name": "string",
+                "item_quantity": "number",
+                "item_price": "number",
+            }
+        ],
+    }
+    categories = [
+        {
+            "id": "groceries",
+            "description": "Food and household goods",
+            "subcategories": [
+                {"id": "oral-care", "description": "Toothpaste and brushes"}
+            ],
+        }
+    ]
+
+    provider.get_response(
+        dummy_image_path,
+        json_schema=dummy_json_schema,
+        model="gpt-4o",
+        categories=categories,
+    )
+
+    call_args = mock_openai_instance.chat.completions.create.call_args
+    system_prompt = call_args[1]["messages"][0]["content"]
+    assert "groceries" in system_prompt
+    assert "oral-care" in system_prompt
+    assert "Across all line items together" in system_prompt
+    assert "taxonomy.category_id" in system_prompt
