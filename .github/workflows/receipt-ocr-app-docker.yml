@@ -11,8 +11,8 @@ on:
     paths:
       - "app/**"
       - ".github/workflows/receipt-ocr-app-docker.yml"
-  schedule:
-    - cron: "0 0 * * *" # Runs every day at midnight UTC
+  # schedule:
+  #   - cron: "0 0 * * *" # Runs every day at midnight UTC
   workflow_dispatch:
 
 jobs:

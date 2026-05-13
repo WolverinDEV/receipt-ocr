@@ -8,8 +8,8 @@ on:
   #   branches: [main]
   # paths:
   #   - "src/receipt_ocr/**"
-  schedule:
-    - cron: "0 0 * * *" # Runs every day at midnight UTC
+  # schedule:
+  #   - cron: "0 0 * * *" # Runs every day at midnight UTC
   workflow_dispatch:
 
 jobs:
