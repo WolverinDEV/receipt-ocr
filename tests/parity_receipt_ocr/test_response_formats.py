@@ -28,6 +28,13 @@ def main():
         "transaction_date": "string",
         "transaction_time": "string",
         "total_amount": "number",
+        "payment_method": "string",
+        "payment_data": {
+            "card_brand": "string",
+            "card_last4": "string",
+            "reference": "string",
+            "authorization_code": "string",
+        },
         "line_items": [
             {
                 "item_name": "string",
@@ -46,6 +53,23 @@ def main():
             "transaction_date": {"type": "string"},
             "transaction_time": {"type": "string"},
             "total_amount": {"type": "number"},
+            "payment_method": {"type": "string"},
+            "payment_data": {
+                "type": "object",
+                "properties": {
+                    "card_brand": {"type": "string"},
+                    "card_last4": {"type": "string"},
+                    "reference": {"type": "string"},
+                    "authorization_code": {"type": "string"},
+                },
+                "required": [
+                    "card_brand",
+                    "card_last4",
+                    "reference",
+                    "authorization_code",
+                ],
+                "additionalProperties": False,
+            },
             "line_items": {
                 "type": "array",
                 "items": {
@@ -66,6 +90,8 @@ def main():
             "transaction_date",
             "transaction_time",
             "total_amount",
+            "payment_method",
+            "payment_data",
             "line_items",
         ],
         "additionalProperties": False,

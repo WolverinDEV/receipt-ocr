@@ -127,6 +127,13 @@ pip install receipt-ocr
       "transaction_date": "2024-05-07",
       "transaction_time": "09:09:00",
       "total_amount": 185.0,
+      "payment_method": "cash",
+      "payment_data": {
+        "card_brand": "",
+        "card_last4": "",
+        "reference": "",
+        "authorization_code": ""
+      },
       "line_items": [
         {
           "item_name": "COLGATE DENTAL",
@@ -171,6 +178,13 @@ pip install receipt-ocr
         "transaction_date": "string",
         "transaction_time": "string",
         "total_amount": "number",
+        "payment_method": "string",
+        "payment_data": {
+            "card_brand": "string",
+            "card_last4": "string",
+            "reference": "string",
+            "authorization_code": "string",
+        },
         "line_items": [
             {
                 "item_name": "string",
@@ -220,6 +234,18 @@ pip install receipt-ocr
         "transaction_date": {"type": "string"},
         "transaction_time": {"type": "string"},
         "total_amount": {"type": "number"},
+        "payment_method": {"type": "string"},
+        "payment_data": {
+          "type": "object",
+          "properties": {
+            "card_brand": {"type": "string"},
+            "card_last4": {"type": "string"},
+            "reference": {"type": "string"},
+            "authorization_code": {"type": "string"}
+          },
+          "required": ["card_brand", "card_last4", "reference", "authorization_code"],
+          "additionalProperties": false
+        },
         "line_items": {
           "type": "array",
           "items": {
@@ -240,6 +266,8 @@ pip install receipt-ocr
         "transaction_date",
         "transaction_time",
         "total_amount",
+        "payment_method",
+        "payment_data",
         "line_items"
       ],
       "additionalProperties": false

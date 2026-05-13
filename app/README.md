@@ -5,7 +5,7 @@ A **FastAPI** service that extracts structured data from receipt images using **
 ## Features
 
 - **LLM-powered extraction**: Uses OpenAI-compatible APIs for accurate receipt parsing
-- **Structured JSON output**: Returns merchant info, line items, totals, and dates
+- **Structured JSON output**: Returns merchant info, line items, totals, dates, and payment details
 - **Custom schemas**: Support for custom JSON schemas
 - **File validation**: Validates image files and sizes (max 5MB)
 - **RESTful API**: Clean FastAPI endpoints with automatic documentation
@@ -81,6 +81,13 @@ Extract structured data from a receipt image.
   "merchant_address": "123 Main St",
   "transaction_date": "2024-01-01",
   "total_amount": 25.99,
+  "payment_method": "credit_card",
+  "payment_data": {
+    "card_brand": "visa",
+    "card_last4": "1234",
+    "reference": "ABC123",
+    "authorization_code": "AUTH42"
+  },
   "line_items": [
     {
       "item_name": "Product Name",

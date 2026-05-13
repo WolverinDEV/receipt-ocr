@@ -4,6 +4,7 @@ from typing import Optional
 from fastapi import FastAPI, HTTPException, UploadFile, Form
 from fastapi.responses import JSONResponse
 
+from receipt_ocr.constants import DEFAULT_RECEIPT_SCHEMA
 from receipt_ocr.processors import ReceiptProcessor
 
 # Initialize processor once (not on each request)
@@ -16,20 +17,7 @@ app = FastAPI(
 )
 
 # Default JSON schema (same as CLI)
-DEFAULT_SCHEMA = {
-    "merchant_name": "string",
-    "merchant_address": "string",
-    "transaction_date": "string",
-    "transaction_time": "string",
-    "total_amount": "number",
-    "line_items": [
-        {
-            "item_name": "string",
-            "item_quantity": "number",
-            "item_price": "number",
-        }
-    ],
-}
+DEFAULT_SCHEMA = DEFAULT_RECEIPT_SCHEMA
 MAX_IMAGE_SIZE = 5 * 1024 * 1024  # 5 MB
 
 

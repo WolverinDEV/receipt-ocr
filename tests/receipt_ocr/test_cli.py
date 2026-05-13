@@ -1,5 +1,7 @@
 import json
 from unittest.mock import patch, MagicMock
+
+from receipt_ocr.constants import DEFAULT_RECEIPT_SCHEMA
 from receipt_ocr.cli import main
 
 
@@ -82,7 +84,9 @@ def test_main_with_default_schema(mock_provider_class, mock_processor_class, tmp
     mock_processor_class.assert_called_once_with(mock_provider_instance)
     # Check that default schema is used
     call_args = mock_processor_instance.process_receipt.call_args
-    assert call_args[0][1]["merchant_name"] == "string"
+    assert call_args[0][1] == DEFAULT_RECEIPT_SCHEMA
+    assert call_args[0][1]["payment_method"] == "string"
+    assert call_args[0][1]["payment_data"]["card_last4"] == "string"
     mock_print.assert_called_once_with(json.dumps({"merchant_name": "Test"}, indent=4))
 
 

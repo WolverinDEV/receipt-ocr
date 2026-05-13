@@ -10,6 +10,13 @@ Here is an example of a desired JSON output:
   "transaction_date": "2023-01-01",
   "transaction_time": "12:34:56",
   "total_amount": 75.50,
+  "payment_method": "credit_card",
+  "payment_data": {{
+    "card_brand": "visa",
+    "card_last4": "1234",
+    "reference": "ABC123",
+    "authorization_code": "AUTH42"
+  }},
   "line_items": [
     {{
       "item_name": "Item 1",
@@ -26,6 +33,8 @@ Here is an example of a desired JSON output:
   ]
 }}
 ```
+
+If payment information is present, include the payment method and any printed payment data such as card brand, masked card digits, reference number, or authorization code.
 
 Please extract the information from the receipt image and provide it in the following JSON schema:
 
