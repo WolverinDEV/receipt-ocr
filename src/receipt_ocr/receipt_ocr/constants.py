@@ -17,9 +17,7 @@ DEFAULT_RECEIPT_SCHEMA = {
         "category": "string",
         "subcategory": "string",
         "category_id": "string",
-        "category_name": "string",
         "subcategory_id": "string",
-        "subcategory_name": "string",
     },
     "line_items": [
         {
