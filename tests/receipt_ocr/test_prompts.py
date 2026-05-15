@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 
 from receipt_ocr.prompts import SYSTEM_PROMPT, USER_PROMPT
@@ -19,6 +20,7 @@ def test_system_prompt_formatting():
         json_schema_content=json_schema_str,
         default_categorization_guidance="",
         categorization_guidance="",
+        current_year=datetime.now().year
     )
 
     assert "merchant_name" in formatted_prompt
@@ -37,6 +39,7 @@ def test_system_prompt_formatting_empty_schema():
         json_schema_content=json_schema_str,
         default_categorization_guidance="",
         categorization_guidance="",
+        current_year=datetime.now().year
     )
 
     assert json_schema_str in formatted_prompt

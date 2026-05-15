@@ -7,7 +7,7 @@ Here is an example of a desired JSON output:
 {{
   "merchant_name": "Example Store",
   "merchant_address": "123 Main St, Anytown, USA 12345",
-  "transaction_date": "2023-01-01",
+  "transaction_date": "{current_year}-01-01",
   "transaction_time": "12:34:56",
   "total_amount": 75.50,
   "payment_method": "credit_card",
@@ -42,15 +42,18 @@ Here is an example of a desired JSON output:
 }}
 ```
 
-If payment information is present, include the payment method and any printed payment data such as card brand, masked card digits, reference number, or authorization code.
-{default_categorization_guidance}
-{categorization_guidance}
-
 Please extract the information from the receipt image and provide it in the following JSON schema:
 
 ```json
 {json_schema_content}
 ```
+
+If payment information is present, include the payment method and any printed payment data such as card brand, masked card digits, reference number, or authorization code.
+{default_categorization_guidance}
+{categorization_guidance}
+
+Double check the transaction date including the day, month, and year against other given dates.
+It is likely, that the transaction year is the current year {current_year} or before.
 """
 
 USER_PROMPT = "Please extract the information from this receipt image."

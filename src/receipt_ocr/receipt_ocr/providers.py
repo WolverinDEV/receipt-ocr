@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 import os
 from abc import ABC, abstractmethod
@@ -58,8 +59,8 @@ class OpenAIProvider(LLMProvider):
             json_schema_content=json.dumps(json_schema, indent=2),
             default_categorization_guidance=build_default_categorization_guidance(),
             categorization_guidance=build_categorization_guidance(categories),
+            current_year=datetime.now().year
         )
-
         response_format_type = response_format_type or "json_object"
         if response_format_type not in ["json_object", "json_schema", "text"]:
             raise ValueError(
